@@ -17,10 +17,10 @@ let questions = [
     },
     {
         "question": "Welches HTML-Tag wird verwendet, um einen Hyperlink zu erstellen?",
-        "answer_1": "<link>",
-        "answer_2": "<a>",
-        "answer_3": "<url>",
-        "answer_4": "<hlink>",
+        "answer_1": "link",
+        "answer_2": "a",
+        "answer_3": "url",
+        "answer_4": "hlink",
         "right_answer": 2
     },
     {
@@ -57,10 +57,10 @@ let questions = [
     },
     {
         "question": "Welches Tag wird in HTML verwendet, um eine externe JavaScript-Datei einzubinden?",
-        "answer_1": "<script>",
-        "answer_2": "<link>",
-        "answer_3": "<js>",
-        "answer_4": "<include>",
+        "answer_1": "script",
+        "answer_2": "link",
+        "answer_3": "js",
+        "answer_4": "include",
         "right_answer": 1
     },
     {
@@ -73,15 +73,19 @@ let questions = [
     },
     {
         "question": "In HTML, welches Tag wird verwendet, um eine ungeordnete Liste zu erstellen?",
-        "answer_1": "<ol>",
-        "answer_2": "<list>",
-        "answer_3": "<ul>",
-        "answer_4": "<li>",
+        "answer_1": "ol",
+        "answer_2": "list",
+        "answer_3": "ul",
+        "answer_4": "li",
         "right_answer": 3
     }
 ];
 
+let rightAnswers = 0;
 let currentQuestion = 0;
+let AUDIO_SUCCESS = new Audio('sounds/correct.mp3')
+let AUDIO_FAIL = new Audio('sounds/wrong.mp3')
+
 
 function init() {
     document.getElementById('high_Number').innerHTML = questions.length;
@@ -89,24 +93,71 @@ function init() {
 }
 
 function showQuestion() {
-    let question = questions[currentQuestion];
-    document.getElementById('questiontext').innerHTML = question['question'];
-    document.getElementById('answer_1').innerHTML = question['answer_1'];
-    document.getElementById('answer_2').innerHTML = question['answer_2'];
-    document.getElementById('answer_3').innerHTML = question['answer_3'];
-    document.getElementById('answer_4').innerHTML = question['answer_4'];
+    //Show end screen
+    if (currentQuestion >= questions.length) {
+        document.getElementById('endScreen').style = '';
+        document.getElementById('questionBody').style = 'display: none';
+        document.getElementById('amount-of-questions').innerHTML = questions.length;
+        document.getElementById('amount-of-right-questions').innerHTML = rightAnswers;
+    } else {
+        //Show next Question
+        let percent = (currentQuestion + 1) / questions.length;
+        percent = Math.round(percent * 100);
+
+        let question = questions[currentQuestion];
+
+        document.getElementById('low_Number').innerHTML = currentQuestion + 1;
+        document.getElementById('questiontext').innerHTML = question['question'];
+        document.getElementById('answer_1').innerHTML = question['answer_1'];
+        document.getElementById('answer_2').innerHTML = question['answer_2'];
+        document.getElementById('answer_3').innerHTML = question['answer_3'];
+        document.getElementById('answer_4').innerHTML = question['answer_4'];
+        document.getElementById('progress-bar').innerHTML = `${percent}%`;
+        document.getElementById('progress-bar').style = `width: ${percent}%`
+    }
 }
 
 function answer(selection) {
+    //showing the corect answer
     let question = questions[currentQuestion];
     let selectedQuestion = selection.slice(-1);
     let idOfRightAnswer = `answer_${question['right_answer']}`
 
+    //if answer corect then +1 to corectAnswers else show the corect ones 
     if (selectedQuestion == question['right_answer']) {
         document.getElementById(selection).parentNode.classList.add('bg-success');
+        AUDIO_SUCCESS.play()
+        rightAnswers++;
     } else {
         document.getElementById(selection).parentNode.classList.add('bg-danger');
         document.getElementById(idOfRightAnswer).parentElement.classList.add('bg-success');
+        AUDIO_FAIL.play();
     }
     document.getElementById('next-button').disabled = false;
+}
+
+function nextQuestion() {
+    currentQuestion++;
+    resetAnswerButtons();
+    showQuestion();
+}
+
+function resetAnswerButtons() {
+    document.getElementById('next-button').disabled = true;
+    document.getElementById('answer_1').parentNode.classList.remove('bg-danger');
+    document.getElementById('answer_1').parentNode.classList.remove('bg-success');
+    document.getElementById('answer_2').parentNode.classList.remove('bg-danger');
+    document.getElementById('answer_2').parentNode.classList.remove('bg-success');
+    document.getElementById('answer_3').parentNode.classList.remove('bg-danger');
+    document.getElementById('answer_3').parentNode.classList.remove('bg-success');
+    document.getElementById('answer_4').parentNode.classList.remove('bg-danger');
+    document.getElementById('answer_4').parentNode.classList.remove('bg-success');
+}
+
+function restartGame() {
+    document.getElementById('endScreen').style = 'display: none';
+    document.getElementById('questionBody').style = '';
+    currentQuestion = 0;
+    rightAnswers = 0;
+    init();
 }
