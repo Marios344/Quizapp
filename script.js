@@ -94,27 +94,44 @@ function init() {
 
 function showQuestion() {
     //Show end screen
-    if (currentQuestion >= questions.length) {
-        document.getElementById('endScreen').style = '';
-        document.getElementById('questionBody').style = 'display: none';
-        document.getElementById('amount-of-questions').innerHTML = questions.length;
-        document.getElementById('amount-of-right-questions').innerHTML = rightAnswers;
+    if (gameIsOver()) {
+        showEndScreen();
     } else {
-        //Show next Question
-        let percent = (currentQuestion + 1) / questions.length;
-        percent = Math.round(percent * 100);
-
-        let question = questions[currentQuestion];
-
-        document.getElementById('low_Number').innerHTML = currentQuestion + 1;
-        document.getElementById('questiontext').innerHTML = question['question'];
-        document.getElementById('answer_1').innerHTML = question['answer_1'];
-        document.getElementById('answer_2').innerHTML = question['answer_2'];
-        document.getElementById('answer_3').innerHTML = question['answer_3'];
-        document.getElementById('answer_4').innerHTML = question['answer_4'];
-        document.getElementById('progress-bar').innerHTML = `${percent}%`;
-        document.getElementById('progress-bar').style = `width: ${percent}%`
+        updateProggressBar();
+        showNextQuestion();
     }
+}
+
+function gameIsOver(){
+    return currentQuestion >= questions.length;
+}
+
+function showEndScreen() {
+    document.getElementById('endScreen').style = '';
+    document.getElementById('questionBody').style = 'display: none';
+    document.getElementById('amount-of-questions').innerHTML = questions.length;
+    document.getElementById('amount-of-right-questions').innerHTML = rightAnswers;
+}
+
+function updateProggressBar() {
+    //Show next Question
+    let percent = (currentQuestion + 1) / questions.length;
+    percent = Math.round(percent * 100);
+
+    document.getElementById('progress-bar').innerHTML = `${percent}%`;
+    document.getElementById('progress-bar').style = `width: ${percent}%`
+}
+
+function showNextQuestion() {
+    let question = questions[currentQuestion];
+
+    document.getElementById('low_Number').innerHTML = currentQuestion + 1;
+    document.getElementById('questiontext').innerHTML = question['question'];
+    document.getElementById('answer_1').innerHTML = question['answer_1'];
+    document.getElementById('answer_2').innerHTML = question['answer_2'];
+    document.getElementById('answer_3').innerHTML = question['answer_3'];
+    document.getElementById('answer_4').innerHTML = question['answer_4'];
+
 }
 
 function answer(selection) {
